@@ -1,0 +1,48 @@
+## Evaluación mediante simulación
+
+Con el objetivo de complementar la validación exploratoria basada en juicio experto, se diseñó una simulación computacional para analizar el comportamiento esperado de la adaptación propuesta de Scrum bajo escenarios de jornada laboral reducida. Esta simulación no pretende reemplazar una validación empírica en un entorno industrial real, sino evaluar, bajo condiciones controladas y reproducibles, cómo distintos factores organizacionales afectan la continuidad operativa, el flujo de trabajo y la productividad relativa del equipo.
+
+La simulación compara tres escenarios principales:
+
+1. **Scrum tradicional de cinco días**, utilizado como escenario de referencia.
+2. **JLR-4D sin adaptación metodológica**, donde se reduce la disponibilidad semanal sin modificar mecanismos de coordinación.
+3. **JLR-4D adaptado**, que incorpora los elementos propuestos en este trabajo: hand-offs estructurados, redistribución funcional de roles, menor dependencia de reuniones síncronas y coordinación asincrónica mediante soporte visual del flujo de trabajo.
+
+Para evitar que los resultados dependan de una única configuración experimental, se definieron múltiples perfiles de equipo, cargas de trabajo y condiciones de proceso. Los perfiles de equipo incluyen equipos senior, mixtos, junior y distribuidos. Las cargas de trabajo consideran escenarios de carga baja, media, alta y alta dependencia entre tareas. Las condiciones de proceso incorporan calidad del backlog, calidad del hand-off, fatiga de reuniones, calidad de gestión y calidad del feedback del cliente.
+
+Además, se incorporó un sistema de eventos organizacionales aleatorios, tales como enfermedad, vacaciones, feriados, paternidad o maternidad, renuncias, despidos, contrataciones, intervenciones de management, feedback del cliente, ajustes salariales, congelamiento salarial y presión por deadlines. Estos eventos modifican temporalmente variables como capacidad disponible, probabilidad de bloqueo, retrabajo, moral del equipo, fatiga por reuniones y tamaño efectivo del equipo.
+
+También se incluyó una variable de soporte mediante inteligencia artificial con tres niveles: sin IA, IA moderada e IA alta. Esta variable modela el posible impacto de herramientas de IA en la mejora de la calidad del backlog, la calidad de los hand-offs, la reducción de retrabajo y la disminución de bloqueos.
+
+Las métricas utilizadas fueron:
+
+* tareas completadas por sprint;
+* eventos de bloqueo;
+* días bloqueados;
+* eventos de retrabajo;
+* eficiencia de flujo;
+* utilización de capacidad;
+* moral efectiva del equipo;
+* cantidad de eventos organizacionales activos.
+
+La simulación ejecutó múltiples combinaciones de escenarios, perfiles de equipo, cargas de trabajo, condiciones de proceso y niveles de soporte IA. En total, se simularon 172.800 sprints, permitiendo obtener promedios comparativos entre los distintos escenarios.
+
+Los resultados generales muestran que Scrum tradicional de cinco días mantiene el mayor nivel de tareas completadas promedio. Sin embargo, la JLR-4D adaptada presenta una mejora sustancial frente a la JLR-4D sin adaptación. En promedio, la adaptación propuesta incrementa las tareas completadas, reduce los eventos de bloqueo, disminuye los días bloqueados y reduce el retrabajo en comparación con una reducción de jornada sin rediseño metodológico.
+
+En particular, los resultados observados fueron:
+
+| Escenario             | Tareas completadas | Eventos de bloqueo | Días bloqueados | Retrabajo | Eficiencia de flujo |
+| --------------------- | -----------------: | -----------------: | --------------: | --------: | ------------------: |
+| Scrum 5 días          |              14.48 |               3.99 |            6.61 |      5.84 |               0.913 |
+| JLR-4D adaptado       |              11.61 |               5.03 |            8.18 |      7.74 |               0.890 |
+| JLR-4D sin adaptación |               7.28 |               8.91 |           23.26 |     11.59 |               0.835 |
+
+Estos resultados sugieren que la adaptación propuesta no elimina completamente el impacto de reducir la disponibilidad semanal, pero sí mitiga de forma significativa sus efectos negativos sobre la continuidad operativa. En comparación con la JLR-4D sin adaptación, la propuesta adaptada presenta una mejora de aproximadamente 59,6% en tareas completadas, una reducción de 43,6% en eventos de bloqueo, una reducción de 64,8% en días bloqueados y una reducción de 33,2% en retrabajo.
+
+El análisis por condiciones muestra que los escenarios de alta dependencia entre tareas y los equipos distribuidos son los más sensibles a la reducción de disponibilidad. En estos casos, la ausencia de mecanismos explícitos de transferencia de conocimiento genera un aumento considerable de los días bloqueados. La adaptación propuesta reduce este impacto al introducir hand-offs estructurados y mecanismos de coordinación asincrónica.
+
+Asimismo, los resultados muestran que el soporte mediante IA puede amplificar los efectos positivos de la adaptación metodológica. En el escenario JLR-4D adaptado, el uso de IA moderada o alta mejora la calidad del backlog y de los hand-offs, reduciendo bloqueos y retrabajo. No obstante, la IA no reemplaza la necesidad de una adaptación metodológica, sino que funciona como un complemento que potencia la coordinación y la documentación del trabajo.
+
+En síntesis, la simulación permite observar que la JLR-4D sin adaptación metodológica tiende a degradar significativamente el flujo de trabajo. En cambio, la adaptación propuesta reduce esta degradación y mantiene niveles de eficiencia más cercanos al Scrum tradicional. Por lo tanto, los resultados simulados aportan evidencia preliminar sobre la plausibilidad operativa del enfoque propuesto, especialmente en contextos donde existen mecanismos claros de hand-off, buena calidad de backlog y soporte adecuado para la coordinación asincrónica.
+
+Como limitación, debe señalarse que estos resultados provienen de un modelo simulado y no de una implementación industrial real. Por lo tanto, no deben interpretarse como evidencia empírica concluyente, sino como una evaluación controlada orientada a explorar el comportamiento esperado del modelo bajo distintas condiciones organizacionales. La validación en equipos reales continúa siendo una línea necesaria de trabajo futuro.
