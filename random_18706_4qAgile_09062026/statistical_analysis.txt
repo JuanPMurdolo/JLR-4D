@@ -1,0 +1,74 @@
+ANÁLISIS ESTADÍSTICO DE LA SIMULACIÓN
+============================================================
+
+Métrica: completed_tasks
+------------------------------------------------------------
+ANOVA F-statistic: 11697.8579
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=16.8518, desvío=4.0030
+JLR-4D adaptado: media=15.8420, desvío=3.5560
+JLR-4D sin adaptación: media=12.4077, desvío=3.3029
+Scrum 5 días: media=19.3883, desvío=3.9113
+
+
+Métrica: blocked_events
+------------------------------------------------------------
+ANOVA F-statistic: 2340.5606
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=2.6931, desvío=2.1107
+JLR-4D adaptado: media=3.0511, desvío=2.3420
+JLR-4D sin adaptación: media=4.5886, desvío=3.3265
+Scrum 5 días: media=2.8072, desvío=2.1233
+
+
+Métrica: blocked_days
+------------------------------------------------------------
+ANOVA F-statistic: 7785.1107
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=3.6975, desvío=3.2124
+JLR-4D adaptado: media=4.8042, desvío=4.1669
+JLR-4D sin adaptación: media=11.0091, desvío=8.7950
+Scrum 5 días: media=4.0208, desvío=3.5085
+
+
+Métrica: rework_events
+------------------------------------------------------------
+ANOVA F-statistic: 169.3701
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=1.7657, desvío=1.4795
+JLR-4D adaptado: media=1.8379, desvío=1.4894
+JLR-4D sin adaptación: media=2.0919, desvío=1.6160
+Scrum 5 días: media=1.9711, desvío=1.5659
+
+
+Métrica: flow_efficiency
+------------------------------------------------------------
+ANOVA F-statistic: 3146.3930
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=0.9088, desvío=0.0801
+JLR-4D adaptado: media=0.8864, desvío=0.0971
+JLR-4D sin adaptación: media=0.8262, desvío=0.1398
+Scrum 5 días: media=0.9166, desvío=0.0740
+
+
+Métrica: capacity_utilization
+------------------------------------------------------------
+ANOVA F-statistic: 3877.8639
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=0.8409, desvío=0.1012
+JLR-4D adaptado: media=0.7947, desvío=0.0935
+JLR-4D sin adaptación: media=0.7950, desvío=0.1556
+Scrum 5 días: media=0.9086, desvío=0.1186
+
