@@ -15,6 +15,12 @@ except ImportError:
     print("Scipy no está instalado. Algunas funciones estadísticas avanzadas no estarán disponibles.")
     stats = None
 
+try:
+    from statsmodels.stats.multicomp import pairwise_tukeyhsd
+except ImportError:
+    print("statsmodels no está instalado. Tukey HSD no estará disponible.")
+    pairwise_tukeyhsd = None
+
 
 # ============================================================
 # Utils
@@ -616,6 +622,8 @@ def statistical_analysis(df: pd.DataFrame, output_dir: Path):
     lines.append("=" * 60)
     lines.append("")
 
+    tukey_rows = []
+
     for metric in metrics:
         lines.append(f"Métrica: {metric}")
         lines.append("-" * 60)
@@ -639,7 +647,11 @@ def statistical_analysis(df: pd.DataFrame, output_dir: Path):
 
         lines.append("")
 
-        scenario_means = df.groupby("scenario")[metric].agg(["mean", "std"]).reset_index()
+        scenario_means = (
+            df.groupby("scenario")[metric]
+            .agg(["mean", "std"])
+            .reset_index()
+        )
 
         for _, row in scenario_means.iterrows():
             lines.append(
@@ -647,10 +659,39 @@ def statistical_analysis(df: pd.DataFrame, output_dir: Path):
             )
 
         lines.append("")
+
+        if pairwise_tukeyhsd is not None:
+            lines.append("Tukey HSD - Comparaciones por pares")
+            lines.append("-" * 60)
+
+            tukey = pairwise_tukeyhsd(
+                endog=df[metric],
+                groups=df["scenario"],
+                alpha=0.05,
+            )
+
+            tukey_table = pd.DataFrame(
+                data=tukey._results_table.data[1:],
+                columns=tukey._results_table.data[0],
+            )
+
+            lines.append(str(tukey_table))
+            lines.append("")
+
+            tukey_table.insert(0, "metric", metric)
+            tukey_rows.append(tukey_table)
+        else:
+            lines.append("statsmodels no está instalado. No se ejecutó Tukey HSD.")
+            lines.append("")
+
         lines.append("")
 
     with open(output_dir / "statistical_analysis.txt", "w", encoding="utf-8") as file:
         file.write("\n".join(lines))
+
+    if tukey_rows:
+        tukey_df = pd.concat(tukey_rows, ignore_index=True)
+        tukey_df.to_csv(output_dir / "tukey_hsd_results.csv", index=False)
 
 
 def generate_interpretation(df: pd.DataFrame, output_dir: Path):
@@ -743,6 +784,7 @@ def generate_outputs(df: pd.DataFrame, output_dir: Path):
     print(f"\nArchivos generados en: {output_dir.resolve()}")
     print("- statistical_analysis.txt")
     print("- interpretation_summary.txt")
+    print("- tukey_hsd_results.csv")
 
 
 # ============================================================
