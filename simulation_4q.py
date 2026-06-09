@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Optional
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 try:
@@ -159,7 +160,9 @@ def available_devs(scenario: Scenario, day: int, team_size: int) -> int:
         return max(1, team_size // 2) if weekday == 4 else team_size
 
     if scenario == Scenario.FOUR_Q:
-        return max(2, team_size // 2) if weekday == 4 else team_size
+        # Staggered schedule: half team on Monday (incoming group) and Friday (outgoing group)
+        # Tuesday–Thursday are Full Coverage days with complete team overlap
+        return max(2, team_size // 2) if weekday in (0, 4) else team_size
 
     return team_size
 
@@ -173,6 +176,24 @@ def learning_factor(scenario: Scenario, sprint_id: int, team: TeamProfile) -> fl
     maturity_bonus = (team.maturity - 0.60) * 0.05
 
     return max(0.90, min(1.04, base + learning + maturity_bonus))
+
+
+# Allows sensitivity analysis to override 4Q modifiers without refactoring
+_four_q_modifier_overrides: dict = {}
+
+
+def morale_drift(scenario: Scenario, sprint_id: int, team: TeamProfile) -> float:
+    """Models sustained morale change over sprints.
+    4Q: slight positive drift from improved work-life balance.
+    JLR-4D no adaptation: gradual decline from unresolved coordination stress.
+    """
+    if scenario == Scenario.FOUR_Q:
+        drift = min(0.06, sprint_id * 0.0025)
+    elif scenario == Scenario.JLR_4D_NO_ADAPTATION:
+        drift = -min(0.08, sprint_id * 0.003)
+    else:
+        drift = 0.0
+    return max(0.50, min(1.10, team.morale + drift))
 
 
 def scenario_modifiers(scenario: Scenario, sprint_id: int, team: TeamProfile) -> dict:
@@ -206,13 +227,15 @@ def scenario_modifiers(scenario: Scenario, sprint_id: int, team: TeamProfile) ->
     if scenario == Scenario.FOUR_Q:
         lf = learning_factor(scenario, sprint_id, team)
 
-        return {
+        base = {
             "capacity": 0.95 * lf,
             "blocking": 1.18 / lf,
             "rework": 1.12 / lf,
             "unblock": 0.70 * lf,
             "meeting_penalty": 0.075,
         }
+        base.update(_four_q_modifier_overrides)
+        return base
 
     return {
         "capacity": 1.00,
@@ -365,6 +388,7 @@ def simulate_sprint(
     mods = scenario_modifiers(scenario, sprint_id, team)
     event = random_event_effect(scenario)
     tasks = generate_tasks(workload, sprint_days)
+    effective_morale = morale_drift(scenario, sprint_id, team)
 
     blocked_events = 0
     rework_events = 0
@@ -373,11 +397,12 @@ def simulate_sprint(
 
     for day in range(sprint_days):
         devs = available_devs(scenario, day, team.team_size)
+        weekday = day % 5
 
         theoretical_capacity = (
             devs
             * team.productivity
-            * team.morale
+            * effective_morale
             * mods["capacity"]
             * event["capacity"]
             * (1 - mods["meeting_penalty"])
@@ -394,9 +419,14 @@ def simulate_sprint(
             if task.blocked and not task.completed:
                 task.blocked_days += 1
 
+        ub_prob = unblock_probability(scenario, team, sprint_id)
+        if scenario == Scenario.FOUR_Q and weekday in (0, 4):
+            # Hand-off days: the incoming group actively reviews and resolves blockers
+            ub_prob = min(0.95, ub_prob * 1.40)
+
         for task in tasks:
             if task.blocked and not task.completed:
-                if random.random() < unblock_probability(scenario, team, sprint_id):
+                if random.random() < ub_prob:
                     task.blocked = False
 
         available_tasks = [
@@ -607,6 +637,16 @@ def plot_dimension(
 # Statistics and interpretation
 # ============================================================
 
+def _cohens_d(a: np.ndarray, b: np.ndarray) -> float:
+    """Computes Cohen's d (pooled SD) between two groups."""
+    na, nb = len(a), len(b)
+    if na < 2 or nb < 2:
+        return float("nan")
+    pooled_var = ((na - 1) * a.std(ddof=1) ** 2 + (nb - 1) * b.std(ddof=1) ** 2) / (na + nb - 2)
+    pooled_std = pooled_var ** 0.5
+    return float((a.mean() - b.mean()) / pooled_std) if pooled_std > 0 else 0.0
+
+
 def statistical_analysis(df: pd.DataFrame, output_dir: Path):
     metrics = [
         "completed_tasks",
@@ -658,6 +698,13 @@ def statistical_analysis(df: pd.DataFrame, output_dir: Path):
                 f"{row['scenario']}: media={row['mean']:.4f}, desvío={row['std']:.4f}"
             )
 
+        lines.append("")
+        lines.append("Cohen's d — tamaño del efecto (4Q Agile Framework vs otros):")
+        four_q_vals = df[df["scenario"] == Scenario.FOUR_Q.value][metric].dropna().values
+        for sc in [Scenario.SCRUM_5D, Scenario.JLR_4D_ADAPTED, Scenario.JLR_4D_NO_ADAPTATION]:
+            other_vals = df[df["scenario"] == sc.value][metric].dropna().values
+            d = _cohens_d(four_q_vals, other_vals)
+            lines.append(f"  4Q vs {sc.value}: d={d:.3f}")
         lines.append("")
 
         if pairwise_tukeyhsd is not None:
@@ -736,6 +783,46 @@ El resultado no debe interpretarse como una demostración empírica definitiva, 
 # Outputs
 # ============================================================
 
+# ============================================================
+# Sensitivity analysis
+# ============================================================
+
+def run_sensitivity(
+    output_dir: Path,
+    experiments: int = 10,
+    sprints: int = 24,
+    sprint_days: int = 10,
+) -> None:
+    """Varies the 4Q unblock modifier by ±20% to test robustness of key results.
+    Runs a lighter simulation (fewer experiments) for speed.
+    """
+    global _four_q_modifier_overrides
+
+    rows = []
+    for label, unblock_value in [("−20%", 0.56), ("baseline", 0.70), ("+20%", 0.84)]:
+        _four_q_modifier_overrides = {} if label == "baseline" else {"unblock": unblock_value}
+        df_s = run_simulation(experiments, sprints, sprint_days)
+        four_q = df_s[df_s["scenario"] == Scenario.FOUR_Q.value]
+        scrum = df_s[df_s["scenario"] == Scenario.SCRUM_5D.value]
+        rows.append({
+            "variation": label,
+            "unblock_modifier": unblock_value,
+            "4q_completed_tasks_mean": round(four_q["completed_tasks"].mean(), 4),
+            "4q_blocked_days_mean": round(four_q["blocked_days"].mean(), 4),
+            "4q_flow_efficiency_mean": round(four_q["flow_efficiency"].mean(), 4),
+            "gap_vs_scrum_pct": round(
+                (four_q["completed_tasks"].mean() / scrum["completed_tasks"].mean() - 1) * 100, 2
+            ),
+        })
+
+    _four_q_modifier_overrides = {}
+
+    sensitivity_df = pd.DataFrame(rows)
+    sensitivity_df.to_csv(output_dir / "sensitivity_unblock.csv", index=False)
+    print("\nSensitivity analysis — 4Q unblock modifier ±20%:")
+    print(sensitivity_df.to_string(index=False))
+
+
 def generate_outputs(df: pd.DataFrame, output_dir: Path):
     df.to_csv(output_dir / "simulation_results_4q.csv", index=False)
 
@@ -801,6 +888,7 @@ if __name__ == "__main__":
     )
 
     generate_outputs(df, output_dir)
+    run_sensitivity(output_dir)
 
     zip_file = create_zip(output_dir)
 
