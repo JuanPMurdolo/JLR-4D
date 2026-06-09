@@ -1,0 +1,7 @@
+parameter,variation,modifier_value,4q_completed_tasks_mean,4q_blocked_days_mean,4q_flow_efficiency_mean,4q_throughput_per_devday_mean,gap_vs_scrum_pct
+unblock,−20%,0.56,16.1331,3.6596,0.9083,0.3361,-16.86
+unblock,baseline,0.7,16.1688,3.1378,0.9148,0.3368,-16.67
+unblock,+20%,0.84,16.1714,2.7552,0.9209,0.3369,-16.66
+blocking,−20%,0.944,16.1992,2.4523,0.9315,0.3375,-16.52
+blocking,baseline,1.18,16.1688,3.1378,0.9148,0.3368,-16.67
+blocking,+20%,1.416,16.1195,3.8128,0.8999,0.3358,-16.93

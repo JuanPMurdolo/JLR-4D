@@ -1,0 +1,5 @@
+scenario,predictability_mean,predictability_std
+Scrum 5 días,0.050625,0.008085165301908408
+JLR-4D adaptado,0.004114583333333333,0.0032041596726390593
+4Q Agile Framework,0.0069791666666666665,0.004190514238193073
+JLR-4D sin adaptación,0.0,0.0

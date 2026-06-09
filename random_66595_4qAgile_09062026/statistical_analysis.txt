@@ -1,0 +1,263 @@
+ANÁLISIS ESTADÍSTICO DE LA SIMULACIÓN
+============================================================
+
+Métrica: completed_tasks
+------------------------------------------------------------
+ANOVA F-statistic: 13771.6217
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=16.1193, desvío=3.7727
+JLR-4D adaptado: media=15.8261, desvío=3.5652
+JLR-4D sin adaptación: media=11.9717, desvío=3.0318
+Scrum 5 días: media=19.3891, desvío=3.9039
+
+Cohen's d — tamaño del efecto (4Q Agile Framework vs otros):
+  4Q vs Scrum 5 días: d=-0.852
+  4Q vs JLR-4D adaptado: d=0.080
+  4Q vs JLR-4D sin adaptación: d=1.212
+
+Tukey HSD - Comparaciones por pares
+------------------------------------------------------------
+                  group1  ... reject
+0     4Q Agile Framework  ...   True
+1     4Q Agile Framework  ...   True
+2     4Q Agile Framework  ...   True
+3        JLR-4D adaptado  ...   True
+4        JLR-4D adaptado  ...   True
+5  JLR-4D sin adaptación  ...   True
+
+[6 rows x 7 columns]
+
+
+Métrica: blocked_events
+------------------------------------------------------------
+ANOVA F-statistic: 2157.6047
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=2.4761, desvío=1.9942
+JLR-4D adaptado: media=3.0270, desvío=2.3477
+JLR-4D sin adaptación: media=4.3730, desvío=3.2668
+Scrum 5 días: media=2.8070, desvío=2.1282
+
+Cohen's d — tamaño del efecto (4Q Agile Framework vs otros):
+  4Q vs Scrum 5 días: d=-0.160
+  4Q vs JLR-4D adaptado: d=-0.253
+  4Q vs JLR-4D sin adaptación: d=-0.701
+
+Tukey HSD - Comparaciones por pares
+------------------------------------------------------------
+                  group1  ... reject
+0     4Q Agile Framework  ...   True
+1     4Q Agile Framework  ...   True
+2     4Q Agile Framework  ...   True
+3        JLR-4D adaptado  ...   True
+4        JLR-4D adaptado  ...   True
+5  JLR-4D sin adaptación  ...   True
+
+[6 rows x 7 columns]
+
+
+Métrica: blocked_days
+------------------------------------------------------------
+ANOVA F-statistic: 7577.6756
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=3.0837, desvío=2.7268
+JLR-4D adaptado: media=4.7882, desvío=4.1811
+JLR-4D sin adaptación: media=10.4655, desvío=8.6343
+Scrum 5 días: media=4.0294, desvío=3.5293
+
+Cohen's d — tamaño del efecto (4Q Agile Framework vs otros):
+  4Q vs Scrum 5 días: d=-0.300
+  4Q vs JLR-4D adaptado: d=-0.483
+  4Q vs JLR-4D sin adaptación: d=-1.153
+
+Tukey HSD - Comparaciones por pares
+------------------------------------------------------------
+                  group1  ... reject
+0     4Q Agile Framework  ...   True
+1     4Q Agile Framework  ...   True
+2     4Q Agile Framework  ...   True
+3        JLR-4D adaptado  ...   True
+4        JLR-4D adaptado  ...   True
+5  JLR-4D sin adaptación  ...   True
+
+[6 rows x 7 columns]
+
+
+Métrica: rework_events
+------------------------------------------------------------
+ANOVA F-statistic: 216.3211
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=1.6440, desvío=1.4025
+JLR-4D adaptado: media=1.8323, desvío=1.4904
+JLR-4D sin adaptación: media=1.9978, desvío=1.5532
+Scrum 5 días: media=1.9608, desvío=1.5695
+
+Cohen's d — tamaño del efecto (4Q Agile Framework vs otros):
+  4Q vs Scrum 5 días: d=-0.213
+  4Q vs JLR-4D adaptado: d=-0.130
+  4Q vs JLR-4D sin adaptación: d=-0.239
+
+Tukey HSD - Comparaciones por pares
+------------------------------------------------------------
+                  group1  ... reject
+0     4Q Agile Framework  ...   True
+1     4Q Agile Framework  ...   True
+2     4Q Agile Framework  ...   True
+3        JLR-4D adaptado  ...   True
+4        JLR-4D adaptado  ...   True
+5  JLR-4D sin adaptación  ...  False
+
+[6 rows x 7 columns]
+
+
+Métrica: flow_efficiency
+------------------------------------------------------------
+ANOVA F-statistic: 3276.9868
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=0.9159, desvío=0.0751
+JLR-4D adaptado: media=0.8867, desvío=0.0964
+JLR-4D sin adaptación: media=0.8277, desvío=0.1416
+Scrum 5 días: media=0.9161, desvío=0.0747
+
+Cohen's d — tamaño del efecto (4Q Agile Framework vs otros):
+  4Q vs Scrum 5 días: d=-0.002
+  4Q vs JLR-4D adaptado: d=0.337
+  4Q vs JLR-4D sin adaptación: d=0.778
+
+Tukey HSD - Comparaciones por pares
+------------------------------------------------------------
+                  group1  ... reject
+0     4Q Agile Framework  ...   True
+1     4Q Agile Framework  ...   True
+2     4Q Agile Framework  ...  False
+3        JLR-4D adaptado  ...   True
+4        JLR-4D adaptado  ...   True
+5  JLR-4D sin adaptación  ...   True
+
+[6 rows x 7 columns]
+
+
+Métrica: capacity_utilization
+------------------------------------------------------------
+ANOVA F-statistic: 4587.5047
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=0.8434, desvío=0.0921
+JLR-4D adaptado: media=0.7951, desvío=0.0936
+JLR-4D sin adaptación: media=0.7919, desvío=0.1388
+Scrum 5 días: media=0.9093, desvío=0.1184
+
+Cohen's d — tamaño del efecto (4Q Agile Framework vs otros):
+  4Q vs Scrum 5 días: d=-0.621
+  4Q vs JLR-4D adaptado: d=0.521
+  4Q vs JLR-4D sin adaptación: d=0.438
+
+Tukey HSD - Comparaciones por pares
+------------------------------------------------------------
+                  group1  ... reject
+0     4Q Agile Framework  ...   True
+1     4Q Agile Framework  ...   True
+2     4Q Agile Framework  ...   True
+3        JLR-4D adaptado  ...   True
+4        JLR-4D adaptado  ...   True
+5  JLR-4D sin adaptación  ...   True
+
+[6 rows x 7 columns]
+
+
+Métrica: throughput_per_devday
+------------------------------------------------------------
+ANOVA F-statistic: 6039.6015
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=0.3358, desvío=0.0786
+JLR-4D adaptado: media=0.2931, desvío=0.0660
+JLR-4D sin adaptación: media=0.2494, desvío=0.0632
+Scrum 5 días: media=0.3232, desvío=0.0651
+
+Cohen's d — tamaño del efecto (4Q Agile Framework vs otros):
+  4Q vs Scrum 5 días: d=0.176
+  4Q vs JLR-4D adaptado: d=0.589
+  4Q vs JLR-4D sin adaptación: d=1.212
+
+Tukey HSD - Comparaciones por pares
+------------------------------------------------------------
+                  group1  ... reject
+0     4Q Agile Framework  ...   True
+1     4Q Agile Framework  ...   True
+2     4Q Agile Framework  ...   True
+3        JLR-4D adaptado  ...   True
+4        JLR-4D adaptado  ...   True
+5  JLR-4D sin adaptación  ...   True
+
+[6 rows x 7 columns]
+
+
+Métrica: avg_cycle_time_completed_only
+------------------------------------------------------------
+ANOVA F-statistic: 627.1652
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=1.8407, desvío=0.3578
+JLR-4D adaptado: media=1.9317, desvío=0.3948
+JLR-4D sin adaptación: media=2.0197, desvío=0.5399
+Scrum 5 días: media=1.9586, desvío=0.3205
+
+Cohen's d — tamaño del efecto (4Q Agile Framework vs otros):
+  4Q vs Scrum 5 días: d=-0.347
+  4Q vs JLR-4D adaptado: d=-0.241
+  4Q vs JLR-4D sin adaptación: d=-0.391
+
+Tukey HSD - Comparaciones por pares
+------------------------------------------------------------
+                  group1  ... reject
+0     4Q Agile Framework  ...   True
+1     4Q Agile Framework  ...   True
+2     4Q Agile Framework  ...   True
+3        JLR-4D adaptado  ...   True
+4        JLR-4D adaptado  ...   True
+5  JLR-4D sin adaptación  ...   True
+
+[6 rows x 7 columns]
+
+
+Métrica: avg_lead_time_completed_only
+------------------------------------------------------------
+ANOVA F-statistic: 681.1907
+ANOVA p-value: 0.00000000
+Resultado: diferencias estadísticamente significativas entre escenarios.
+
+4Q Agile Framework: media=3.2078, desvío=0.3767
+JLR-4D adaptado: media=3.1509, desvío=0.3838
+JLR-4D sin adaptación: media=3.0281, desvío=0.4865
+Scrum 5 días: media=3.1547, desvío=0.3557
+
+Cohen's d — tamaño del efecto (4Q Agile Framework vs otros):
+  4Q vs Scrum 5 días: d=0.145
+  4Q vs JLR-4D adaptado: d=0.150
+  4Q vs JLR-4D sin adaptación: d=0.413
+
+Tukey HSD - Comparaciones por pares
+------------------------------------------------------------
+                  group1  ... reject
+0     4Q Agile Framework  ...   True
+1     4Q Agile Framework  ...   True
+2     4Q Agile Framework  ...   True
+3        JLR-4D adaptado  ...   True
+4        JLR-4D adaptado  ...  False
+5  JLR-4D sin adaptación  ...   True
+
+[6 rows x 7 columns]
+
