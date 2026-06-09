@@ -473,6 +473,9 @@ def simulate_sprint(
     blocked_days_completed = sum(t.blocked_days for t in completed)
     blocked_days_all = sum(t.blocked_days for t in tasks)
 
+    # Actual dev-days available this sprint (accounts for staggered days in 4Q)
+    actual_devdays = sum(available_devs(scenario, d, team.team_size) for d in range(sprint_days))
+
     flow_efficiency = (
         worked_days / (worked_days + blocked_days_completed)
         if worked_days + blocked_days_completed > 0
@@ -505,6 +508,7 @@ def simulate_sprint(
         "rework_events": rework_events,
         "flow_efficiency": flow_efficiency,
         "capacity_utilization": used_capacity / total_capacity if total_capacity > 0 else 0,
+        "throughput_per_devday": len(completed) / actual_devdays if actual_devdays > 0 else 0,
         "avg_cycle_time_completed_only": (
             sum(cycle_times) / len(cycle_times) if cycle_times else 0
         ),
@@ -655,6 +659,9 @@ def statistical_analysis(df: pd.DataFrame, output_dir: Path):
         "rework_events",
         "flow_efficiency",
         "capacity_utilization",
+        "throughput_per_devday",
+        "avg_cycle_time_completed_only",
+        "avg_lead_time_completed_only",
     ]
 
     lines = []
@@ -805,11 +812,32 @@ def run_sensitivity(
         four_q = df_s[df_s["scenario"] == Scenario.FOUR_Q.value]
         scrum = df_s[df_s["scenario"] == Scenario.SCRUM_5D.value]
         rows.append({
+            "parameter": "unblock",
             "variation": label,
-            "unblock_modifier": unblock_value,
+            "modifier_value": unblock_value,
             "4q_completed_tasks_mean": round(four_q["completed_tasks"].mean(), 4),
             "4q_blocked_days_mean": round(four_q["blocked_days"].mean(), 4),
             "4q_flow_efficiency_mean": round(four_q["flow_efficiency"].mean(), 4),
+            "4q_throughput_per_devday_mean": round(four_q["throughput_per_devday"].mean(), 4),
+            "gap_vs_scrum_pct": round(
+                (four_q["completed_tasks"].mean() / scrum["completed_tasks"].mean() - 1) * 100, 2
+            ),
+        })
+
+    # Also vary blocking modifier
+    for label, blocking_value in [("−20%", 0.944), ("baseline", 1.18), ("+20%", 1.416)]:
+        _four_q_modifier_overrides = {} if label == "baseline" else {"blocking": blocking_value}
+        df_s = run_simulation(experiments, sprints, sprint_days)
+        four_q = df_s[df_s["scenario"] == Scenario.FOUR_Q.value]
+        scrum = df_s[df_s["scenario"] == Scenario.SCRUM_5D.value]
+        rows.append({
+            "parameter": "blocking",
+            "variation": label,
+            "modifier_value": blocking_value,
+            "4q_completed_tasks_mean": round(four_q["completed_tasks"].mean(), 4),
+            "4q_blocked_days_mean": round(four_q["blocked_days"].mean(), 4),
+            "4q_flow_efficiency_mean": round(four_q["flow_efficiency"].mean(), 4),
+            "4q_throughput_per_devday_mean": round(four_q["throughput_per_devday"].mean(), 4),
             "gap_vs_scrum_pct": round(
                 (four_q["completed_tasks"].mean() / scrum["completed_tasks"].mean() - 1) * 100, 2
             ),
@@ -819,7 +847,7 @@ def run_sensitivity(
 
     sensitivity_df = pd.DataFrame(rows)
     sensitivity_df.to_csv(output_dir / "sensitivity_unblock.csv", index=False)
-    print("\nSensitivity analysis — 4Q unblock modifier ±20%:")
+    print("\nSensitivity analysis — 4Q modifier variations ±20%:")
     print(sensitivity_df.to_string(index=False))
 
 
@@ -845,6 +873,34 @@ def generate_outputs(df: pd.DataFrame, output_dir: Path):
 
     detailed_summary.to_csv(output_dir / "detailed_summary_4q.csv", index=False)
 
+    # Predictability index: fraction of sprints where >= 70% of workload tasks were completed
+    # Grouped per experiment x scenario to capture consistency across runs
+    workload_tasks = {w.name: w.tasks for w in WORKLOADS}
+    df["target_tasks"] = df["workload_profile"].map(workload_tasks) * 0.70
+    df["sprint_met_target"] = (df["completed_tasks"] >= df["target_tasks"]).astype(int)
+    predictability = (
+        df.groupby(["scenario", "experiment_id"])["sprint_met_target"]
+        .mean()
+        .reset_index()
+        .rename(columns={"sprint_met_target": "predictability_index"})
+        .groupby("scenario")["predictability_index"]
+        .agg(["mean", "std"])
+        .reindex(scenario_order())
+        .reset_index()
+    )
+    predictability.columns = ["scenario", "predictability_mean", "predictability_std"]
+    predictability.to_csv(output_dir / "predictability_index.csv", index=False)
+    df.drop(columns=["target_tasks", "sprint_met_target"], inplace=True)
+
+    # Learning curve slope per scenario (linear regression of completed_tasks over sprint_id)
+    if stats is not None:
+        slopes = []
+        for sc in scenario_order():
+            sc_data = df[df["scenario"] == sc].groupby("sprint_id")["completed_tasks"].mean()
+            slope, _, _, _, _ = stats.linregress(sc_data.index, sc_data.values)
+            slopes.append({"scenario": sc, "velocity_slope": round(slope, 5)})
+        pd.DataFrame(slopes).to_csv(output_dir / "velocity_slopes.csv", index=False)
+
     plot_bar(df, "completed_tasks", "Tareas completadas promedio por escenario", "Tareas completadas", output_dir / "01_completed_tasks_by_scenario.png")
     plot_bar(df, "blocked_events", "Eventos de bloqueo promedio por escenario", "Eventos de bloqueo", output_dir / "02_blocked_events_by_scenario.png")
     plot_bar(df, "blocked_days", "Días bloqueados promedio por escenario", "Días bloqueados", output_dir / "03_blocked_days_by_scenario.png")
@@ -861,6 +917,59 @@ def generate_outputs(df: pd.DataFrame, output_dir: Path):
     plot_dimension(df, "workload_profile", "completed_tasks", "Tareas completadas por carga de trabajo", "Tareas completadas", output_dir / "12_completed_tasks_by_workload.png")
     plot_dimension(df, "team_profile", "blocked_days", "Días bloqueados por perfil de equipo", "Días bloqueados", output_dir / "13_blocked_days_by_team.png")
     plot_dimension(df, "workload_profile", "blocked_days", "Días bloqueados por carga de trabajo", "Días bloqueados", output_dir / "14_blocked_days_by_workload.png")
+
+    plot_bar(df, "avg_cycle_time_completed_only", "Cycle time promedio por escenario", "Días (cycle time)", output_dir / "15_cycle_time_by_scenario.png")
+    plot_bar(df, "avg_lead_time_completed_only", "Lead time promedio por escenario", "Días (lead time)", output_dir / "16_lead_time_by_scenario.png")
+    plot_bar(df, "throughput_per_devday", "Throughput normalizado por dev-day", "Tareas / dev-day", output_dir / "17_throughput_per_devday.png")
+    plot_line(df, "avg_cycle_time_completed_only", "Evolución del cycle time por sprint", "Cycle time (días)", output_dir / "18_cycle_time_over_time.png")
+    plot_line(df, "throughput_per_devday", "Evolución del throughput normalizado por sprint", "Tareas / dev-day", output_dir / "19_throughput_per_devday_over_time.png")
+
+    # Predictability bar chart
+    fig, ax = plt.subplots(figsize=(11, 6))
+    ax.bar(predictability["scenario"], predictability["predictability_mean"],
+           yerr=predictability["predictability_std"], capsize=4)
+    ax.set_title("Índice de predictabilidad por escenario (% sprints que alcanzan 70% del objetivo)")
+    ax.set_ylabel("Predictabilidad (0–1)")
+    ax.set_xlabel("Escenario")
+    ax.set_ylim(0, 1)
+    plt.xticks(rotation=20, ha="right")
+    ax.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(output_dir / "20_predictability_by_scenario.png", dpi=300)
+    plt.close()
+
+    # Morale trajectory plot
+    sprints_range = list(range(24))
+    fig, ax = plt.subplots(figsize=(11, 6))
+    for team in TEAMS:
+        for sc, label, color in [
+            (Scenario.FOUR_Q, "4Q Agile Framework", "steelblue"),
+            (Scenario.JLR_4D_NO_ADAPTATION, "JLR-4D sin adaptación", "tomato"),
+            (Scenario.SCRUM_5D, "Scrum 5 días", "seagreen"),
+            (Scenario.JLR_4D_ADAPTED, "JLR-4D adaptado", "orange"),
+        ]:
+            morales = [morale_drift(sc, s, team) for s in sprints_range]
+            ax.plot(sprints_range, morales, alpha=0.35, color=color, linewidth=1)
+    # Overlay team-averaged lines
+    for sc, label, color in [
+        (Scenario.FOUR_Q, "4Q Agile Framework", "steelblue"),
+        (Scenario.JLR_4D_NO_ADAPTATION, "JLR-4D sin adaptación", "tomato"),
+        (Scenario.SCRUM_5D, "Scrum 5 días", "seagreen"),
+        (Scenario.JLR_4D_ADAPTED, "JLR-4D adaptado", "orange"),
+    ]:
+        avg_morales = [
+            sum(morale_drift(sc, s, t) for t in TEAMS) / len(TEAMS)
+            for s in sprints_range
+        ]
+        ax.plot(sprints_range, avg_morales, label=label, color=color, linewidth=2.5)
+    ax.set_title("Trayectoria de moral del equipo por escenario (promedio de perfiles)")
+    ax.set_ylabel("Moral efectiva")
+    ax.set_xlabel("Sprint")
+    ax.legend()
+    ax.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(output_dir / "21_morale_trajectory.png", dpi=300)
+    plt.close()
 
     statistical_analysis(df, output_dir)
     generate_interpretation(df, output_dir)
