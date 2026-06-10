@@ -1,209 +1,147 @@
-# JLR-4D
+## Versiones de la simulación
 
-Simulación en Python para analizar el impacto de distintos esquemas de trabajo sobre el rendimiento de equipos de desarrollo.
+El repositorio contiene dos versiones principales de la simulación, utilizadas con objetivos distintos.
 
-El proyecto compara tres escenarios operativos:
+### `Simulation.py`
 
-- **Scrum 5 días**
-- **JLR-4D sin adaptación**
-- **JLR-4D adaptado**
+Corresponde a la versión de simulación utilizada para el artículo.
 
-La simulación evalúa cómo cambian métricas como tareas completadas, bloqueos, retrabajo, eficiencia de flujo y utilización de capacidad según:
+Esta versión permite comparar escenarios operativos relacionados con la jornada laboral reducida y analizar métricas como tareas completadas, bloqueos, retrabajo, eficiencia de flujo y utilización de capacidad bajo diferentes condiciones de equipo, carga de trabajo, proceso, soporte de IA y eventos organizacionales.
 
-- el perfil del equipo,
-- la carga de trabajo,
-- la condición del proceso,
-- el nivel de soporte de IA,
-- y eventos organizacionales aleatorios.
+Su objetivo principal es servir como soporte experimental para el análisis presentado en el artículo.
 
-## Objetivo
+### `simulation_4q.py`
 
-Este repositorio busca explorar, de forma experimental, cómo distintas condiciones organizacionales y operativas afectan la productividad y el flujo de trabajo de un equipo de software.
+Corresponde a la versión de simulación utilizada para la tesis.
 
-El modelo permite comparar escenarios con diferentes restricciones de disponibilidad, fatiga de reuniones, calidad de backlog, handoff entre personas/equipos y soporte de IA.
+Esta versión está orientada al análisis del enfoque **4Q / 4Q Agile Framework**, incorporando los elementos conceptuales y operativos definidos para la propuesta metodológica de la tesis.
+
+Su objetivo principal es permitir la evaluación exploratoria del comportamiento del modelo 4Q frente a escenarios comparativos, considerando restricciones de disponibilidad, coordinación, handoff, backlog, reuniones, capacidad operativa y adaptación del proceso.
+
+---
 
 ## Qué hace la simulación
 
-El archivo principal es `Simulation.py`, que:
+El repositorio permite ejecutar simulaciones para analizar el impacto de distintos esquemas de trabajo sobre equipos de desarrollo de software.
 
-1. Define perfiles de equipo, carga y proceso.
-2. Genera tareas con esfuerzo, prioridad, complejidad y día de llegada.
-3. Simula varios sprints por experimento.
-4. Introduce eventos organizacionales aleatorios como:
-   - enfermedad,
-   - vacaciones,
-   - feriados,
-   - renuncias,
-   - contrataciones,
-   - intervenciones de management,
-   - feedback del cliente,
-   - presión por deadlines.
-5. Calcula métricas operativas por sprint.
-6. Exporta resultados agregados en archivos CSV.
-7. Genera visualizaciones en PNG para comparar escenarios.
+A nivel general, las simulaciones:
 
-## Escenarios simulados
+1. Definen perfiles de equipo, carga de trabajo y condiciones del proceso.
+2. Generan tareas con esfuerzo, prioridad, complejidad y día de llegada.
+3. Simulan múltiples sprints por experimento.
+4. Incorporan eventos organizacionales aleatorios.
+5. Calculan métricas operativas por sprint.
+6. Exportan resultados detallados y agregados en archivos CSV.
+7. Generan visualizaciones en formato PNG para comparar escenarios.
 
-### 1. Scrum 5 días
-Modelo base de trabajo continuo durante 5 días hábiles.
-
-### 2. JLR-4D sin adaptación
-Asume una reducción a 4 días de trabajo sin rediseñar el proceso.  
-En este escenario, el quinto día no aporta capacidad del equipo.
-
-### 3. JLR-4D adaptado
-Asume un modelo de 4 días con adaptación operativa.  
-El quinto día mantiene capacidad parcial, reduciendo parte del impacto negativo del cambio.
-
-## Variables del modelo
-
-### Perfiles de equipo
-La simulación incluye distintos tipos de equipos:
-
-- **Equipo senior**
-- **Equipo mixto**
-- **Equipo junior**
-- **Equipo distribuido**
-
-Cada perfil define factores como:
-
-- tamaño del equipo,
-- productividad,
-- probabilidad de bloqueo,
-- probabilidad de retrabajo,
-- madurez,
-- moral,
-- satisfacción salarial,
-- distribución del conocimiento,
-- riesgo de rotación.
-
-### Perfiles de carga de trabajo
-
-- **Carga baja**
-- **Carga media**
-- **Carga alta**
-- **Alta dependencia**
-
-Cada perfil modifica:
-
-- cantidad de tareas,
-- dependencia entre tareas,
-- urgencia,
-- complejidad promedio.
-
-### Condiciones del proceso
-
-- **Condición favorable**
-- **Condición estándar**
-- **Backlog débil**
-- **Hand-off débil**
-- **Alta fatiga de reuniones**
-
-Estas condiciones impactan en:
-
-- calidad del backlog,
-- calidad del handoff,
-- fatiga de reuniones,
-- calidad de management,
-- calidad del feedback del cliente.
-
-### Soporte de IA
-
-- **Sin IA**
-- **IA moderada**
-- **IA alta**
-
-El soporte de IA afecta principalmente:
-
-- bloqueo,
-- retrabajo,
-- calidad efectiva de backlog,
-- calidad de handoff,
-- productividad.
-
-## Métricas generadas
-
-La simulación produce, entre otras, las siguientes métricas:
-
-- tareas completadas,
-- tareas incompletas,
-- eventos de bloqueo,
-- días bloqueados,
-- eventos de retrabajo,
-- tiempo de ciclo promedio,
-- lead time promedio,
-- eficiencia de flujo,
-- utilización de capacidad,
-- moral efectiva,
-- cantidad de eventos activos.
+---
 
 ## Estructura del repositorio
 
-- `Simulation.py`: script principal de simulación.
-- `simulation_results.csv`: resultados detallados por sprint.
-- `simulation_summary.csv`: resumen agregado por escenario, perfil de equipo, carga, condición y soporte de IA.
-- `scenario_summary.csv`: resumen global por escenario.
-- `ai_summary.csv`: resumen por escenario y nivel de IA.
-- `event_summary.csv`: resumen de resultados con eventos activos.
-- `config_team_profiles.csv`: configuración de perfiles de equipo.
-- `config_workload_profiles.csv`: configuración de perfiles de carga.
-- `config_process_conditions.csv`: configuración de condiciones de proceso.
-- `config_events.csv`: configuración de eventos aleatorios.
-
-### Gráficos generados
-
-El script también exporta visualizaciones, por ejemplo:
-
-- `01_completed_tasks_by_scenario.png`
-- `02_blocked_events_by_scenario.png`
-- `03_blocked_days_by_scenario.png`
-- `04_rework_events_by_scenario.png`
-- `05_flow_efficiency_by_scenario.png`
-- `06_completed_tasks_over_time.png`
-- `07_blocked_days_over_time.png`
-- `08_flow_efficiency_over_time.png`
-- `09_completed_tasks_by_team.png`
-- `10_completed_tasks_by_workload.png`
-- `11_blocked_days_by_team.png`
-- `12_blocked_days_by_workload.png`
-- `13_completed_tasks_by_condition.png`
-- `14_blocked_days_by_condition.png`
-- `15_flow_efficiency_by_condition.png`
-- `16_completed_tasks_by_event.png`
-- `17_blocked_days_by_event.png`
-- `18_completed_tasks_by_ai.png`
-- `19_blocked_days_by_ai.png`
-
-## Requisitos
-
-Este proyecto usa Python y depende de:
-
-- `pandas`
-- `matplotlib`
-
-Instalación sugerida:
-
-```bash
-pip install pandas matplotlib
+```text
+JLR-4D/
+│
+├── Simulation.py
+├── simulation_4q.py
+│
+├── simulation_results.csv
+├── simulation_summary.csv
+├── scenario_summary.csv
+├── ai_summary.csv
+├── event_summary.csv
+│
+├── config_team_profiles.csv
+├── config_workload_profiles.csv
+├── config_process_conditions.csv
+├── config_events.csv
+│
+├── 01_completed_tasks_by_scenario.png
+├── 02_blocked_events_by_scenario.png
+├── 03_blocked_days_by_scenario.png
+├── 04_rework_events_by_scenario.png
+├── 05_flow_efficiency_by_scenario.png
+├── 06_completed_tasks_over_time.png
+├── 07_blocked_days_over_time.png
+├── 08_flow_efficiency_over_time.png
+├── 09_completed_tasks_by_team.png
+├── 10_completed_tasks_by_workload.png
+├── 11_blocked_days_by_team.png
+├── 12_blocked_days_by_workload.png
+├── 13_completed_tasks_by_condition.png
+├── 14_blocked_days_by_condition.png
+├── 15_flow_efficiency_by_condition.png
+├── 16_completed_tasks_by_event.png
+├── 17_blocked_days_by_event.png
+├── 18_completed_tasks_by_ai.png
+└── 19_blocked_days_by_ai.png
 ```
+
+---
+
+## Archivos principales
+
+### `Simulation.py`
+
+Script de simulación utilizado para el artículo.
+Contiene la definición de escenarios, perfiles, generación de tareas, lógica de ejecución de sprints, cálculo de métricas y exportación de resultados asociados al análisis experimental del artículo.
+
+### `simulation_4q.py`
+
+Script de simulación utilizado para la tesis.
+Está orientado al análisis del enfoque **4Q / 4Q Agile Framework** y permite evaluar el comportamiento de la propuesta metodológica bajo diferentes condiciones de equipo, carga de trabajo, disponibilidad y adaptación del proceso.
+
+### `simulation_results.csv`
+
+Resultados detallados por sprint, experimento y combinación de variables.
+
+### `simulation_summary.csv`
+
+Resumen agregado por escenario, perfil de equipo, carga de trabajo, condición de proceso y nivel de soporte de IA.
+
+### `scenario_summary.csv`
+
+Resumen global por escenario simulado.
+
+### `ai_summary.csv`
+
+Resumen de resultados agrupados por escenario y nivel de soporte de IA.
+
+### `event_summary.csv`
+
+Resumen de resultados considerando la presencia de eventos organizacionales activos.
+
+### Archivos `config_*.csv`
+
+Exportan la configuración utilizada para los perfiles de equipo, cargas de trabajo, condiciones de proceso y eventos aleatorios.
+Sirven como documentación del modelo y permiten revisar los supuestos utilizados en cada corrida.
+
+---
 
 ## Cómo ejecutar
 
-Ejecutar el script principal:
+Para ejecutar la simulación utilizada en el artículo:
 
 ```bash
 python Simulation.py
 ```
 
-Esto generará automáticamente:
+Para ejecutar la simulación utilizada en la tesis:
 
-- resultados en CSV,
-- archivos de configuración exportados,
-- y gráficos en PNG.
+```bash
+python simulation_4q.py
+```
+
+La ejecución genera automáticamente, según el script utilizado:
+
+* archivos CSV con resultados,
+* archivos CSV con configuración del modelo,
+* gráficos comparativos en formato PNG.
+
+---
 
 ## Configuración principal
 
-Dentro de `Simulation.py`, la ejecución por defecto está definida como:
+En `Simulation.py`, la ejecución por defecto está definida como:
 
 ```python
 df = run_experiments(
@@ -213,48 +151,11 @@ df = run_experiments(
 )
 ```
 
-Esto significa que el modelo corre:
+Esto significa que el modelo ejecuta:
 
-- **20 experimentos**
-- **12 sprints por experimento**
-- **10 días por sprint**
+* **20 experimentos**
+* **12 sprints por experimento**
+* **10 días por sprint**
 
-Puedes modificar estos valores directamente en el script para ajustar el nivel de análisis o el costo computacional.
-
-## Lógica general de simulación
-
-A alto nivel, cada sprint:
-
-1. aplica efectos de eventos activos,
-2. ajusta moral, backlog, handoff y fatiga,
-3. genera tareas según el perfil de carga,
-4. calcula capacidad diaria según el escenario,
-5. simula bloqueos, desbloqueos y retrabajo,
-6. registra tareas completadas e incompletas,
-7. agrega métricas de desempeño.
-
-## Resultados esperados
-
-A partir de los archivos ya generados en el repositorio, el proyecto permite analizar comparativamente:
-
-- productividad promedio por escenario,
-- impacto del soporte de IA,
-- efecto de backlog/handoff débiles,
-- sensibilidad frente a eventos organizacionales,
-- diferencias entre equipos senior, junior y distribuidos.
-
-## Posibles extensiones
-
-Algunas mejoras futuras posibles:
-
-- parametrización por línea de comandos,
-- archivo de configuración externo,
-- notebooks para análisis exploratorio,
-- tests automáticos,
-- exportación de resultados más detallados,
-- dashboards interactivos,
-- calibración del modelo con datos reales.
-
-## Licencia
-
-Agregar la licencia correspondiente si se desea publicar o reutilizar formalmente el proyecto.
+En `simulation_4q.py`, los parámetros pueden variar según la configuración definida para el modelo de tesis.
+Estos valores pueden modificarse directamente en el script para ajustar la profundidad del análisis o el costo computacional.
