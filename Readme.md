@@ -1,3 +1,16 @@
+# JLR-4D
+
+Simulación en Python para analizar el impacto de distintos esquemas de trabajo sobre el rendimiento operativo de equipos de desarrollo de software.
+
+El repositorio contiene dos líneas de simulación:
+
+* **`Simulation.py`**, utilizada como soporte experimental para el artículo.
+* **`simulation_4q.py`**, utilizada como soporte de simulación para la tesis y orientada al análisis del enfoque **4Q / 4Q Agile Framework**.
+
+El proyecto permite comparar escenarios vinculados con la jornada laboral reducida y observar cómo varían métricas como tareas completadas, bloqueos, retrabajo, eficiencia de flujo y utilización de capacidad bajo diferentes condiciones de equipo, carga de trabajo, proceso, soporte de IA y eventos organizacionales.
+
+La simulación no pretende reemplazar una validación empírica con equipos reales, sino funcionar como una herramienta experimental para analizar tendencias, riesgos y posibles efectos bajo distintos supuestos de modelado.
+
 ## Versiones de la simulación
 
 El repositorio contiene dos versiones principales de la simulación, utilizadas con objetivos distintos.
