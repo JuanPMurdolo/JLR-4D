@@ -144,7 +144,7 @@ Para ejecutar la simulación utilizada en la tesis:
 python simulation_4q.py
 ```
 
-La ejecución genera automáticamente, según el script utilizado:
+La ejecución genera automáticamente, según el script utilizado y su configuración interna:
 
 * archivos CSV con resultados,
 * archivos CSV con configuración del modelo,
@@ -172,3 +172,28 @@ Esto significa que el modelo ejecuta:
 
 En `simulation_4q.py`, los parámetros pueden variar según la configuración definida para el modelo de tesis.
 Estos valores pueden modificarse directamente en el script para ajustar la profundidad del análisis o el costo computacional.
+
+---
+
+## Interpretación de los resultados
+
+Los resultados generados por la simulación deben interpretarse como salidas de un modelo experimental basado en supuestos definidos en el código.
+
+Por lo tanto, las diferencias observadas entre escenarios no deben entenderse como evidencia empírica definitiva, sino como indicadores exploratorios que permiten analizar tendencias, riesgos y posibles comportamientos del sistema bajo determinadas condiciones.
+
+La utilidad principal del modelo está en comparar escenarios relativos, observar la sensibilidad del rendimiento frente a cambios en disponibilidad, coordinación, carga de trabajo, soporte de IA y eventos organizacionales, y apoyar la discusión metodológica sobre la adopción de jornadas laborales reducidas en equipos de desarrollo de software.
+
+## Limitaciones
+
+El modelo simplifica la realidad de los equipos de desarrollo.
+
+Algunas limitaciones relevantes son:
+
+* los parámetros utilizados dependen de supuestos definidos en la simulación;
+* los eventos organizacionales se modelan de forma probabilística;
+* no se utilizan datos reales para calibrar productividad, bloqueos o retrabajo;
+* la interacción humana y la dinámica de equipo se representan de forma simplificada;
+* los resultados pueden variar según la cantidad de experimentos ejecutados;
+* la simulación permite comparar escenarios, pero no reemplaza una validación empírica con equipos reales.
+
+Estas limitaciones son esperables en una simulación exploratoria y deben ser consideradas al momento de analizar los resultados.
